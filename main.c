@@ -55,7 +55,7 @@ int main()
 						p=(code*)malloc(sizeof(code));
 						head=p;
 					}
-					p.data=ch;
+					p->data=ch;
 					p=p->next=(code*)malloc(sizeof(code));
 				}
 			free(p);
@@ -63,25 +63,30 @@ int main()
 		}
 	//存注释
 	i=0;
-	code *t , *p;
+	code *code_t , *indent_t , *cat *free_t;
 	t=p=head;
 	while(t->next != NULL)
 	{
-		if(t->data == '/' && t->data == '/')
+		if(code_t->next->data == '/' && code_t->next->next->data == '/')//为了让cat得到正确的地址所以提前一个字符
 		{
-			j=t;
-
-			while(t->data != '\n')//从"//"到行尾都是注释
+			cat = t;
+			code_t = code_t->next;//重回正轨
+			while(code_t->data != '\n')//从"//"到行尾都是注释
 			{
-				//y表示每行的内容的坐标,挨个存进tp。
-				//原有注释用空格覆盖
-				t=t->next//检查下一个注释字符
+				if(indenthead == NULL)//存储注释字符
+				{
+					*indent_t = (indent *)malloc( sizeof(indent);)
+					head = p;
+				}
+				indent_t->data[i++] = t->data;
+				free_t=t;//释放注释字符
+				code_t = code_t->next;//检查下一个注释字符
+				free(free_t);
 			}
-			y=0;//内容起始坐标归零
-			x++;//跳到下一个注释
-			code[t] = INDENTFLAG;//注释的开始添加一个标志，以便以后添加。
-			t=j;//跳过注释
+			indent_t = indent_t->next = (indent *)malloc(sizeof(indent));
+			cat->next = t;//拼接链表，跳过注释
 		}
+		//以上重构完毕
 		if(code[t] == '/' && code[t+1] == '*')//从" /* "到" */ "都是注释
 		{
 			j=t;
