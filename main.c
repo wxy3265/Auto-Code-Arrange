@@ -11,10 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
-#define INDENTFLAG 26
-#define SPACE ' '
-#define INDENTREPLACE
-#define COMMENT_SIZE 100
+#define ANINDENTSIZE 1000
 typedef struct code
 {
 	char data;
@@ -22,7 +19,7 @@ typedef struct code
 }code
 typedef struct indent
 {
-	wchar_t data[1000];
+	wchar_t data[ANINDENTSIZE];
 	char *next;
 }
 struct indent
