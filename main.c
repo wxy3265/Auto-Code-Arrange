@@ -15,14 +15,14 @@
 typedef struct code
 {
 	char data;
-	char *next;
+	struct code *next;
 }code
 typedef struct indent
 {
 	wchar_t data[ANINDENTSIZE];
-	char *next;
+	struct indent *next;
 }
-struct indent
+indent
 int main()
 {
 	code *codehead=NULL;
