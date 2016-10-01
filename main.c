@@ -12,18 +12,17 @@
 #include <string.h>
 #include <malloc.h>
 #define INDENTFLAG 26
-#define SPACE ' '
-#define INDENTREPLACE
+#define SPACE ' ';
 #define COMMENT_SIZE 100
 typedef struct code
 {
 	char data;
-	char *next;
+	struct code *next;
 }code
 typedef struct indent
 {
 	wchar_t data[1000];
-	char *next;
+	struct indent *next;
 }
 struct indent
 int main()
@@ -71,6 +70,7 @@ int main()
 		{
 			cat = code_t;
 			code_t = code_t->next;//重回正轨
+			code_t->data = INDENTFLAG;
 			while(code_t->data != '\n')//从"//"到行尾都是注释
 			{
 				if(indenthead == NULL)//存储注释字符
@@ -91,9 +91,11 @@ int main()
 		if(code_t->next->data == '/' && code_t->next->next->data == '*')//从" /* "到" */ "都是注释
 		{
 			cat = code_t;
-			code_t = code_t->next; 
+			code_t = code_t->next;
+			code -> data = INDENTFLAG;
 			while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//这个字符是不是注释的结尾
 			{
+				
 				cat = code_t;
 				code_t-> = code_t
 				if(indenthead == NULL)
@@ -130,20 +132,20 @@ int main()
 	//删缩进 
 	i=0;
 	//以上重构完毕
-	while(code[i]!='\0')//错误----------------------------------------------------------------------------------------------------------------------------------------
-	{	
-		if(code[i] == '#' || code[i] ==  ';' 
-		  || code[i] == '(' || code[i] == ')'
-		  || code[i] == '{' || code[i] == '}'
-		  || code[i] == ',' || code[i] == ';'
-		  || code[i] == '#' || code[i] == '>'
-		  || code[i] == '=' )//删缩进关键字:双向删除
+	code_t = codehead;
+	char ches;
+	while(code_t -> next !=NULL)
+	{
+		ches = code_t -> data;
+		if(ches == '#' || ches ==  ';' 
+		  || ches == '(' || ches == ')'
+		  || ches == '{' || ches == '}'
+		  || ches == ',' || ches == ';'
+		  || ches == '#' || ches == '>'
+		  || ches == '=' )//删缩进关键字:双向删除
 		{
-			for(j = i-1 ; isspace(code[j]) ; j++)
-			{
-				code[j] = INDENTREPLACE;//将注释替换为特定字符
-			}
-			for(j = i-1 ; isspace(code[j]) ; j--)
+			for(;code_t -> data != SPACE;code_t =code_t -> next)	
+			for(j = i-1 ; !isspace(code[j]) ; j--)
 			{
 				code[j] = INDENTREPLACE;//将注释替换为特定字符
 			}
