@@ -17,12 +17,13 @@
 #define COMMENT_SIZE 100
 typedef struct code
 {
-	char data;
+	struct code *prior;
+	wchar_t data;
 	struct code *next;
 }code;
 typedef struct indent
 {
-	wchar_t data[1000];
+	wchar_t *data;
 	struct indent *next;
 }indent;
 int main()
@@ -48,16 +49,20 @@ int main()
 	else//如果没出错就读文件
 		{
 			code *codehead=NULL;
-			code *p;
+			code *p,*temp;
 			while(ch=fgetc(fp)!=EOF)
 				{
 					if(codehead == NULL)
 					{
 						p = (code*)malloc(sizeof(code));
 						codehead=p;
+						p -> prior = NULL;
 					}
+					temp=p;
 					p->data=ch;
-					p = p->next = (code*)malloc(sizeof(code));
+					p->next = (code*)malloc(sizeof(code));
+					p=p->next;
+					p->prior=temp;
 				}
 			free(p);
 			p=NULL;
@@ -68,32 +73,57 @@ int main()
 	code_t = codehead;
 	while(code_t->next != NULL)
 	{
-		if(code_t -> next -> data == '/' && code_t->next->next->data == '/')//为了让cat得到正确的地址所以提前一个字符
+		if(code_t -> next -> data == '/' && code_t -> next -> next ->data == '/')
 		{
+			temp = (code*)malloc(sizeof(code));
+			temp -> data =INENTFLAG;
+			code_t -> next = temp;
+			temp -> next = code_t -> next;
+			temp -> prior = code_t;
 			cat = code_t;
-			code_t = code_t->next;//重回正轨
-			while(code_t->data != '\n')//从"//"到行尾都是注释
+			code_t = code_t -> next;
+
+			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+ 
+			while( ! (code_t ->next -> data != '\n')//这个字符是不是注释的结尾
 			{
-				if(indenthead == NULL)//存储注释字符
+				cat = code_t;
+				code_t = code_t->next;
+				if(indenthead == NULL)
 				{
 					indenthead = (indent*)malloc(sizeof(indent));
-					codehead = code_t;
 				}
-				indent_t->data[i++] = code_t->data;
-				free_t = indent_t;//释放注释字符
-				code_t = code_t->next;//检查下一个注释字符
+	
+				if(i<=INDENTSIZE)
+					*(indentstr + i++) = code_t -> data;//此处改为用字符串暂存
+	
+				free_t = code_t;
+				code_t = code_t->next;
 				free(free_t);
 			}
+			indent_t -> data = indentstr;
 			indent_t->next = (indent*)malloc(sizeof(indent));
-			indent_t = indent_t -> next;
-			cat->next = code_t;//拼接链表，跳过注释
+			indent_t = indent_t->next;
+
+			cat->next = code_t;//此时code_t已经跳过了注释，cat连接到代码。
 			i=0;
+
 		}
+	}
 		//以上重构完毕
-		if(code_t->next->data == '/' && code_t->next->next->data == '*')//从" /* "到" */ "都是注释
+		if(code_t->next->data == '/' && code_t->next-next->data == '*')//从" /* "到" */ "都是注释
 		{
+
+			temp = (code*)malloc(sizeof(code));
+			temp -> data =INENTFLAG;
+			code_t -> next = temp;
+			temp -> next = code_t -> next;
+			temp -> prior = code_t;
 			cat = code_t;
-			code_t = code_t->next; 
+			code_t = code_t -> next;
+
+			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+
 			while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//这个字符是不是注释的结尾
 			{
 				cat = code_t;
@@ -102,14 +132,17 @@ int main()
 				{
 					indenthead = (indent*)malloc(sizeof(indent));
 				}
-				indent_t->data[i++] = code_t -> data;
-				free_t = indent_t; //一个巨大的错误------------------------------------------------------------------------------------------------------------------------------------
+				if(i<=INDENTSIZE)
+					*(indentstr + i++) = code_t -> data;//此处改为用字符串暂存
+				free_t = code_t;
 				code_t = code_t->next;
 				free(free_t);
 			}
+			indent_t -> data = indentstr;
 			indent_t->next = (indent*)malloc(sizeof(indent));
 			indent_t = indent_t->next;
-			cat->next = code_t;
+
+			cat->next = code_t;//此时code_t已经跳过了注释，cat连接到代码。
 			i=0;
 		}
 		code_t = code_t -> next;
