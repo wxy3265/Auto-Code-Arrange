@@ -1,11 +1,11 @@
 /*
-	引言
+	����
 	
-  .此为自动缩进之源码
-  .实现代码格式自动添加
-  .用户可自定义代码风格
-  .用户可将自己的代码风格存到文件
-  .支持C
+  .��Ϊ�Զ�����֮Դ��
+  .ʵ�ִ����ʽ�Զ�����
+  .�û����Զ��������
+  .�û��ɽ��Լ��Ĵ�����浽�ļ�
+  .֧��C
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,19 +34,19 @@ int main()
 	int i=0;
 	int j=0;
 	FILE *fp;
-	//打开文件
-	printf("文件名：");
+	//���ļ�
+	printf("�ļ�����");
 	scanf("%256s",filename);
 	char ch;
 	if( (fp = fopen(filename,"r+")) == NULL)
 		{
-			printf("文件打开错误");
+			printf("�ļ��򿪴���");
 			getchar();
 			exit(1);
 		}
 		
-	//读取文件
-	else//如果没出错就读文件
+	//��ȡ�ļ�
+	else//���û�����Ͷ��ļ�
 		{
 			code *codehead=NULL;
 			code *p,*temp;
@@ -67,7 +67,7 @@ int main()
 			free(p);
 			p=NULL;
 		}
-	//存注释
+	//��ע��
 	i=0;
 	code *code_t , *indent_t , *cat , *free_t;
 	code_t = codehead;
@@ -80,12 +80,12 @@ int main()
 			code_t -> next = temp;
 			temp -> next = code_t -> next;
 			temp -> prior = code_t;
-			cat = temp;//要连标志一起拼接
+			cat = temp;
 			code_t = code_t -> next;
 
 			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
  
-			while( ! (code_t ->next -> data != '\n')//这个字符是不是注释的结尾
+			while( ! (code_t ->next -> data != '\n')//����ַ��ǲ���ע�͵Ľ�β
 			{
 				cat = code_t;
 				code_t = code_t->next;
@@ -95,7 +95,7 @@ int main()
 				}
 	
 				if(i<=INDENTSIZE)
-					*(indentstr + i++) = code_t -> data;//此处改为用字符串暂存
+					*(indentstr + i++) = code_t -> data;//�˴���Ϊ���ַ����ݴ�
 	
 				free_t = code_t;
 				code_t = code_t->next;
@@ -105,13 +105,13 @@ int main()
 			indent_t->next = (indent*)malloc(sizeof(indent));
 			indent_t = indent_t->next;
 
-			cat->next = code_t;//此时code_t已经跳过了注释，cat连接到代码。
+			cat->next = code_t;//��ʱcode_t�Ѿ�������ע�ͣ�cat���ӵ����롣
 			i=0;
 
 		}
 	}
-		//以上重构完毕
-		if(code_t->next->data == '/' && code_t->next-next->data == '*')//从" /* "到" */ "都是注释
+		//�����ع����
+		if(code_t->next->data == '/' && code_t->next-next->data == '*')//��" /* "��" */ "����ע��
 		{
 
 			temp = (code*)malloc(sizeof(code));
@@ -124,7 +124,7 @@ int main()
 
 			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
 
-			while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//这个字符是不是注释的结尾
+			while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//����ַ��ǲ���ע�͵Ľ�β
 			{
 				cat = code_t;
 				code_t = code_t->next;
@@ -133,7 +133,7 @@ int main()
 					indenthead = (indent*)malloc(sizeof(indent));
 				}
 				if(i<=INDENTSIZE)
-					*(indentstr + i++) = code_t -> data;//此处改为用字符串暂存
+					*(indentstr + i++) = code_t -> data;//�˴���Ϊ���ַ����ݴ�
 				free_t = code_t;
 				code_t = code_t->next;
 				free(free_t);
@@ -142,15 +142,15 @@ int main()
 			indent_t->next = (indent*)malloc(sizeof(indent));
 			indent_t = indent_t->next;
 
-			cat->next = code_t;//此时code_t已经跳过了注释，cat连接到代码。
+			cat->next = code_t;//��ʱcode_t�Ѿ�������ע�ͣ�cat���ӵ����롣
 			i=0;
 		}
 		code_t = code_t -> next;
-	}//现在有序存储着所有注释，添加时再有序释放
+	}//��������洢������ע�ͣ�����ʱ�������ͷ�
 	
-/*删除部分*///////////////////////////////
+/*ɾ������*///////////////////////////////
 	
-	//删回车
+	//ɾ�س�
 	code_t = codehead;
 	while(code_t -> next != NULL)
 	{
@@ -162,9 +162,9 @@ int main()
 		}
 		code_t = code_t -> next;
 	}
-	//删缩进 
+	//ɾ���� 
 	i=0;
-	//以上重构完毕
+	//�����ع����
 	/*
 	{	
 		if(code[i] == '#' || code[i] ==  ';' 
@@ -172,15 +172,15 @@ int main()
 		  || code[i] == '{' || code[i] == '}'
 		  || code[i] == ',' || code[i] == ';'
 		  || code[i] == '#' || code[i] == '>'
-		  || code[i] == '=' )//删缩进关键字:双向删除
+		  || code[i] == '=' )//ɾ�����ؼ���:˫��ɾ��
 		{
 			for(j = i-1 ; isspace(code[j]) ; j++)
 			{
-				code[j] = INDENTREPLACE;//将注释替换为特定字符
+				code[j] = INDENTREPLACE;//��ע���滻Ϊ�ض��ַ�
 			}
 			for(j = i-1 ; isspace(code[j]) ; j--)
 			{
-				code[j] = INDENTREPLACE;//将注释替换为特定字符
+				code[j] = INDENTREPLACE;//��ע���滻Ϊ�ض��ַ�
 			}
 		}
 		if(code[i] == '=' && code[i+1] == '=')
@@ -193,13 +193,13 @@ int main()
 			{
 				code[j] = INDENTREPLACE;
 			}
-		//单向删除（向右）
+		//����ɾ�������ң�
 		if(code[i] == '<')
 			for(j = i-1 ; isspace(code[j]); j--)
 			{
 				code[j] = INDENTREPLACE;
 			}
-		//替换完毕
+		//�滻���
 		i++;
 	}
 	memset(temp1,'\0',sizeof(temp1)-1);
