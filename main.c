@@ -1,209 +1,209 @@
+
 /*
-	ÒıÑÔ
-	
-  .´ËÎª×Ô¶¯Ëõ½øÖ®Ô´Âë
-  .ÊµÏÖ´úÂë¸ñÊ½×Ô¶¯Ìí¼Ó
-  .ÓÃ»§¿É×Ô¶¨Òå´úÂë·ç¸ñ
-  .ÓÃ»§¿É½«×Ô¼ºµÄ´úÂë·ç¸ñ´æµ½ÎÄ¼ş
-  .Ö§³ÖC
+    å¼•è¨€
+    
+  .æ­¤ä¸ºè‡ªåŠ¨ç¼©è¿›ä¹‹æºç 
+  .å®ç°ä»£ç æ ¼å¼è‡ªåŠ¨æ·»åŠ 
+  .ç”¨æˆ·å¯è‡ªå®šä¹‰ä»£ç é£æ ¼
+  .ç”¨æˆ·å¯å°†è‡ªå·±çš„ä»£ç é£æ ¼å­˜åˆ°æ–‡ä»¶
+  .æ”¯æŒC
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #define INDENTFLAG 26
 #define SPACE ' '
 #define INDENTREPLACE
 #define COMMENT_SIZE 100
 typedef struct code
 {
-	struct code *prior;
-	wchar_t data;
-	struct code *next;
+    struct code *prior;
+    wchar_t data;
+    struct code *next;
 }code;
 typedef struct indent
 {
-	wchar_t *data;
-	struct indent *next;
+    wchar_t *data;
+    struct indent *next;
 }indent;
 int main()
 {
-	code *codehead=NULL;
-	code *indenthead=NULL;
-	char filename[256];
-	int i=0;
-	int j=0;
-	FILE *fp;
-	//´ò¿ªÎÄ¼ş
-	printf("ÎÄ¼şÃû£º");
-	scanf("%256s",filename);
-	char ch;
-	if( (fp = fopen(filename,"r+")) == NULL)
-		{
-			printf("ÎÄ¼ş´ò¿ª´íÎó");
-			getchar();
-			exit(1);
-		}
-		
-	//¶ÁÈ¡ÎÄ¼ş
-	else//Èç¹ûÃ»³ö´í¾Í¶ÁÎÄ¼ş
-		{
-			code *codehead=NULL;
-			code *p,*temp;
-			while(ch=fgetc(fp)!=EOF)
-				{
-					if(codehead == NULL)
-					{
-						p = (code*)malloc(sizeof(code));
-						codehead=p;
-						p -> prior = NULL;
-					}
-					temp=p;
-					p->data=ch;
-					p->next = (code*)malloc(sizeof(code));
-					p=p->next;
-					p->prior=temp;
-				}
-			free(p);
-			p=NULL;
-		}
-	//´æ×¢ÊÍ
-	i=0;
-	code *code_t , *indent_t , *cat , *free_t;
-	code_t = codehead;
-	while(code_t->next != NULL)
-	{
-		if(code_t -> next -> data == '/' && code_t -> next -> next ->data == '/')
-		{
-			temp = (code*)malloc(sizeof(code));
-			temp -> data =INENTFLAG;
-			code_t -> next = temp;
-			temp -> next = code_t -> next;
-			temp -> prior = code_t;
-			cat = temp;
-			code_t = code_t -> next;
+    code *codehead=NULL;
+    code *indenthead=NULL;
+    char filename[256];
+    int i=0;
+    int j=0;
+    FILE *fp;
+    //æ‰“å¼€æ–‡ä»¶
+    printf("æ–‡ä»¶åï¼š");
+    scanf("%256s",filename);
+    char ch;
+    if( (fp = fopen(filename,"r+")) == NULL)
+        {
+            printf("æ–‡ä»¶æ‰“å¼€é”™è¯¯");
+            getchar();
+            exit(1);
+        }
+        
+    //è¯»å–æ–‡ä»¶
+    else//å¦‚æœæ²¡å‡ºé”™å°±è¯»æ–‡ä»¶
+        {
+            code *codehead=NULL;
+            code *p,*temp;
+            while(ch=fgetc(fp)!=EOF)
+                {
+                    if(codehead == NULL)
+                    {
+                        p = (code*)malloc(sizeof(code));
+                        codehead=p;
+                        p -> prior = NULL;
+                    }
+                    temp=p;
+                    p->data=ch;
+                    p->next = (code*)malloc(sizeof(code));
+                    p=p->next;
+                    p->prior=temp;
+                }
+            free(p);
+            p=NULL;
+        }
+    //å­˜æ³¨é‡Š
+    i=0;
+    code *code_t , *indent_t , *cat , *free_t;
+    code_t = codehead;
+    while(code_t->next != NULL)
+    {
+        if(code_t -> next -> data == '/' && code_t -> next -> next ->data == '/')
+        {
+            temp = (code*)malloc(sizeof(code));
+            temp -> data =INENTFLAG;
+            code_t -> next = temp;
+            temp -> next = code_t -> next;
+            temp -> prior = code_t;
+            cat = temp;
+            code_t = code_t -> next;
 
-			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+            indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
  
-			while( ! (code_t ->next -> data != '\n')//Õâ¸ö×Ö·ûÊÇ²»ÊÇ×¢ÊÍµÄ½áÎ²
-			{
-				cat = code_t;
-				code_t = code_t->next;
-				if(indenthead == NULL)
-				{
-					indenthead = (indent*)malloc(sizeof(indent));
-				}
-	
-				if(i<=INDENTSIZE)
-					*(indentstr + i++) = code_t -> data;//´Ë´¦¸ÄÎªÓÃ×Ö·û´®Ôİ´æ
-	
-				free_t = code_t;
-				code_t = code_t->next;
-				free(free_t);
-			}
-			indent_t -> data = indentstr;
-			indent_t->next = (indent*)malloc(sizeof(indent));
-			indent_t = indent_t->next;
+            while( ! (code_t ->next -> data != '\n'))//è¿™ä¸ªå­—ç¬¦æ˜¯ä¸æ˜¯æ³¨é‡Šçš„ç»“å°¾
+            {
+                cat = code_t;
+                code_t = code_t->next;
+                if(indenthead == NULL)
+                {
+                    indenthead = (indent*)malloc(sizeof(indent));
+                }
+    
+                if(i<=INDENTSIZE)
+                    *(indentstr + i++) = code_t -> data;//æ­¤å¤„æ”¹ä¸ºç”¨å­—ç¬¦ä¸²æš‚å­˜
+    
+                free_t = code_t;
+                code_t = code_t->next;
+                free(free_t);
+            }
+            indent_t -> data = indentstr;
+            indent_t->next = (indent*)malloc(sizeof(indent));
+            indent_t = indent_t->next;
 
-			cat->next = code_t;//´ËÊ±code_tÒÑ¾­Ìø¹ıÁË×¢ÊÍ£¬catÁ¬½Óµ½´úÂë¡£
-			i=0;
+            cat->next = code_t;//æ­¤æ—¶code_tå·²ç»è·³è¿‡äº†æ³¨é‡Šï¼Œcatè¿æ¥åˆ°ä»£ç ã€‚
+            i=0;
 
-		}
-	}
-		//ÒÔÉÏÖØ¹¹Íê±Ï
-		if(code_t->next->data == '/' && code_t->next-next->data == '*')//´Ó" /* "µ½" */ "¶¼ÊÇ×¢ÊÍ
-		{
+        }
+    }
+        //ä»¥ä¸Šé‡æ„å®Œæ¯•
+        if(code_t->next->data == '/' && code_t->next-next->data == '*')//ä»" /* "åˆ°" */ "éƒ½æ˜¯æ³¨é‡Š
+        {
 
-			temp = (code*)malloc(sizeof(code));
-			temp -> data =INENTFLAG;
-			code_t -> next = temp;
-			temp -> next = code_t -> next;
-			temp -> prior = code_t;
-			cat = temp;
-			code_t = code_t -> next;
+            temp = (code*)malloc(sizeof(code));
+            temp -> data =INENTFLAG;
+            code_t -> next = temp;
+            temp -> next = code_t -> next;
+            temp -> prior = code_t;
+            cat = temp;
+            code_t = code_t -> next;
 
-			indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+            indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
 
-			while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//Õâ¸ö×Ö·ûÊÇ²»ÊÇ×¢ÊÍµÄ½áÎ²
-			{
-				cat = code_t;
-				code_t = code_t->next;
-				if(indenthead == NULL)
-				{
-					indenthead = (indent*)malloc(sizeof(indent));
-				}
-				if(i<=INDENTSIZE)
-					*(indentstr + i++) = code_t -> data;//´Ë´¦¸ÄÎªÓÃ×Ö·û´®Ôİ´æ
-				free_t = code_t;
-				code_t = code_t->next;
-				free(free_t);
-			}
-			indent_t -> data = indentstr;
-			indent_t->next = (indent*)malloc(sizeof(indent));
-			indent_t = indent_t->next;
+            while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//è¿™ä¸ªå­—ç¬¦æ˜¯ä¸æ˜¯æ³¨é‡Šçš„ç»“å°¾
+            {
+                cat = code_t;
+                code_t = code_t->next;
+                if(indenthead == NULL)
+                {
+                    indenthead = (indent*)malloc(sizeof(indent));
+                }
+                if(i<=INDENTSIZE)
+                    *(indentstr + i++) = code_t -> data;//æ­¤å¤„æ”¹ä¸ºç”¨å­—ç¬¦ä¸²æš‚å­˜
+                free_t = code_t;
+                code_t = code_t->next;
+                free(free_t);
+            }
+            indent_t -> data = indentstr;
+            indent_t->next = (indent*)malloc(sizeof(indent));
+            indent_t = indent_t->next;
 
-			cat->next = code_t;//´ËÊ±code_tÒÑ¾­Ìø¹ıÁË×¢ÊÍ£¬catÁ¬½Óµ½´úÂë¡£
-			i=0;
-		}
-		code_t = code_t -> next;
-	}//ÏÖÔÚÓĞĞò´æ´¢×ÅËùÓĞ×¢ÊÍ£¬Ìí¼ÓÊ±ÔÙÓĞĞòÊÍ·Å
-	
-/*É¾³ı²¿·Ö*///////////////////////////////
-	
-	//É¾»Ø³µ
-	code_t = codehead;
-	while(code_t -> next != NULL)
-	{
-		if(code_t->next->data == '\n')
-		{
-			free_t= code_t->next;
-			code_t -> next =code_t ->next ->next;
-			free(free_t);
-		}
-		code_t = code_t -> next;
-	}
-	//É¾Ëõ½ø 
-	i=0;
-	//ÒÔÉÏÖØ¹¹Íê±Ï
-	/*
-	{	
-		if(code[i] == '#' || code[i] ==  ';' 
-		  || code[i] == '(' || code[i] == ')'
-		  || code[i] == '{' || code[i] == '}'
-		  || code[i] == ',' || code[i] == ';'
-		  || code[i] == '#' || code[i] == '>'
-		  || code[i] == '=' )//É¾Ëõ½ø¹Ø¼ü×Ö:Ë«ÏòÉ¾³ı
-		{
-			for(j = i-1 ; isspace(code[j]) ; j++)
-			{
-				code[j] = INDENTREPLACE;//½«×¢ÊÍÌæ»»ÎªÌØ¶¨×Ö·û
-			}
-			for(j = i-1 ; isspace(code[j]) ; j--)
-			{
-				code[j] = INDENTREPLACE;//½«×¢ÊÍÌæ»»ÎªÌØ¶¨×Ö·û
-			}
-		}
-		if(code[i] == '=' && code[i+1] == '=')
-		{
-			for(j = i-1; isspace[code[j]]; j--)
-			{
-				code[j] = INDENTREPLACE;
-			}
-			for(j = i+2; isspace[code[j]]; j++)
-			{
-				code[j] = INDENTREPLACE;
-			}
-		//µ¥ÏòÉ¾³ı£¨ÏòÓÒ£©
-		if(code[i] == '<')
-			for(j = i-1 ; isspace(code[j]); j--)
-			{
-				code[j] = INDENTREPLACE;
-			}
-		//Ìæ»»Íê±Ï
-		i++;
-	}
-	memset(temp1,'\0',sizeof(temp1)-1);
-	for(i=0;i<=strlen[code])
-	*/
-		
+            cat->next = code_t;//æ­¤æ—¶code_tå·²ç»è·³è¿‡äº†æ³¨é‡Šï¼Œcatè¿æ¥åˆ°ä»£ç ã€‚
+            i=0;
+        }
+        code_t = code_t -> next;
+    //ç°åœ¨æœ‰åºå­˜å‚¨ç€æ‰€æœ‰æ³¨é‡Šï¼Œæ·»åŠ æ—¶å†æœ‰åºé‡Šæ”¾
+    
+/*åˆ é™¤éƒ¨åˆ†*///////////////////////////////
+    
+    //åˆ å›è½¦
+    code_t = codehead;
+    while(code_t -> next != NULL)
+    {
+        if(code_t->next->data == '\n')
+        {
+            free_t= code_t->next;
+            code_t -> next =code_t ->next ->next;
+            free(free_t);
+        }
+        code_t = code_t -> next;
+    }
+    //åˆ ç¼©è¿› 
+    i=0;
+    //ä»¥ä¸Šé‡æ„å®Œæ¯•
+    /*
+    {    
+        if(code[i] == '#' || code[i] ==  ';' 
+          || code[i] == '(' || code[i] == ')'
+          || code[i] == '{' || code[i] == '}'
+          || code[i] == ',' || code[i] == ';'
+          || code[i] == '#' || code[i] == '>'
+          || code[i] == '=' )//åˆ ç¼©è¿›å…³é”®å­—:åŒå‘åˆ é™¤
+        {
+            for(j = i-1 ; isspace(code[j]) ; j++)
+            {
+                code[j] = INDENTREPLACE;//å°†æ³¨é‡Šæ›¿æ¢ä¸ºç‰¹å®šå­—ç¬¦
+            }
+            for(j = i-1 ; isspace(code[j]) ; j--)
+            {
+                code[j] = INDENTREPLACE;//å°†æ³¨é‡Šæ›¿æ¢ä¸ºç‰¹å®šå­—ç¬¦
+            }
+        }
+        if(code[i] == '=' && code[i+1] == '=')
+        {
+            for(j = i-1; isspace[code[j]]; j--)
+            {
+                code[j] = INDENTREPLACE;
+            }
+            for(j = i+2; isspace[code[j]]; j++)
+            {
+                code[j] = INDENTREPLACE;
+            }
+        //å•å‘åˆ é™¤ï¼ˆå‘å³ï¼‰
+        if(code[i] == '<')
+            for(j = i-1 ; isspace(code[j]); j--)
+            {
+                code[j] = INDENTREPLACE;
+            }
+        //æ›¿æ¢å®Œæ¯•
+        i++;
+    }
+    memset(temp1,'\0',sizeof(temp1)-1);
+    for(i=0;i<=strlen[code])
+    */
+        
 }
