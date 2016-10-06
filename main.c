@@ -1,4 +1,3 @@
-
 /*
     引言
     
@@ -13,8 +12,8 @@
 #include <string.h>
 #define INDENTFLAG 26
 #define SPACE ' '
-#define INDENTREPLACE
-#define COMMENT_SIZE 100
+#define INDENTSIZE 1000
+
 typedef struct code
 {
     struct code *prior;
@@ -30,27 +29,19 @@ int main()
 {
     code *codehead=NULL;
     code *indenthead=NULL;
+    code *temp;
+    wchar_t *indentstr;
     char filename[256];
     int i=0;
     int j=0;
     FILE *fp;
     //打开文件
-    printf("文件名：");
+    printf("filename：");
     scanf("%256s",filename);
     char ch;
-    if( (fp = fopen(filename,"r+")) == NULL)
-        {
-            printf("文件打开错误");
-            getchar();
-            exit(1);
-        }
-        
-    //读取文件
-    else//如果没出错就读文件
-        {
-            code *codehead=NULL;
-            code *p,*temp;
-            while(ch=fgetc(fp)!=EOF)
+    code *codehead=NULL;
+    code *p,*temp;
+            while(ch=getchar()=EOF)
                 {
                     if(codehead == NULL)
                     {
@@ -76,14 +67,14 @@ int main()
         if(code_t -> next -> data == '/' && code_t -> next -> next ->data == '/')
         {
             temp = (code*)malloc(sizeof(code));
-            temp -> data =INENTFLAG;
+            temp -> data =INDENTFLAG;
             code_t -> next = temp;
             temp -> next = code_t -> next;
             temp -> prior = code_t;
             cat = temp;
             code_t = code_t -> next;
 
-            indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+            indentstr = (wchar_t*)calloc(INDENTSIZE,sizeof(wchar_t));
  
             while( ! (code_t ->next -> data != '\n'))//这个字符是不是注释的结尾
             {
@@ -111,18 +102,18 @@ int main()
         }
     }
         //以上重构完毕
-        if(code_t->next->data == '/' && code_t->next-next->data == '*')//从" /* "到" */ "都是注释
+        if(code_t->next->data == '/' && code_t->next->next->data == '*')//从" /* "到" */ "都是注释
         {
 
             temp = (code*)malloc(sizeof(code));
-            temp -> data =INENTFLAG;
+            temp -> data =INDENTFLAG;
             code_t -> next = temp;
             temp -> next = code_t -> next;
             temp -> prior = code_t;
             cat = temp;
             code_t = code_t -> next;
 
-            indentstr = (wchar_t*)calloc(INDENSIZE,sizeof(wchar_t));
+            indentstr = (wchar_t*)calloc(INDENTSIZE,sizeof(wchar_t));
 
             while( ! (code_t ->next -> data == '*' && code_t -> next -> next -> data== '/'))//这个字符是不是注释的结尾
             {
