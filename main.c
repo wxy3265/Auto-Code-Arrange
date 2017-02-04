@@ -1,4 +1,4 @@
-/*  Copyright ©️ 2017 ChuJinkai <cjkzwe@outlook.com>
+/*  Copyright 2017 ChuJinkai. All rights reserved. 
     引言
     
   .此为自动缩进之源码
